@@ -33,9 +33,9 @@ names = [
 #Define all of the classifiers to test
 classifiers = [
     LinearSVC(),
-    SVC(kernel="linear", gamma="auto", C=10, degree=4),
-    SVC(kernel="rbf", gamma="auto", C=10, degree=4),
-    SVC(kernel="sigmoid", gamma="auto", C=10, degree=4),
+    SVC(kernel="linear", gamma="auto", C=10, degree=5),
+    SVC(kernel="rbf", gamma="auto", C=10, degree=5),
+    SVC(kernel="sigmoid", gamma="auto", C=10, degree=5),
     DecisionTreeClassifier(max_depth=100),
     RandomForestClassifier(max_depth=100, n_estimators=20, max_features=5),
     MLPClassifier(alpha=1, max_iter=1000),
