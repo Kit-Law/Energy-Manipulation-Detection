@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.svm import SVC
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
+import matplotlib.pyplot as plt
 
 #The classifier used will be a C-Support Vector Classification with a RBF kernel
 #This scored the highest acuraccy in testing at 93.9%
@@ -22,11 +23,11 @@ X = np.delete(trainingData, 24, 1)
 #Normalize the data
 scaler = MinMaxScaler()
 X = scaler.fit_transform(X)
-testingData = scaler.transform(testingData)
+testingDataNormalized = scaler.transform(testingData)
 
 #Fit the classifier and label the testing split
 clf = classifier.fit(X, y)
-preditctions = clf.predict(testingData)
+preditctions = clf.predict(testingDataNormalized)
 
 #Write the labels to the output file
 f = open('..\..\Output\TestingResults.txt', "w")
