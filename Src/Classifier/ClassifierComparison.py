@@ -16,6 +16,7 @@ import pandas as pd
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
 
 names = [
     "Nearest Neighbors",
@@ -69,7 +70,7 @@ X = scaler.fit_transform(X)
 i, j = numKFoldSplits * numKFoldRep, len(classifiers)
 results = [[0 for x in range(i)] for y in range(j)] 
 
-print("  [Algorithm]------------------------------------------------------------------[Results]-------------------------------------------------------------------[Average]  ")
+print("  [Algorithm]-----------------------------------------------------------------------------------------[Results]------------------------------------------------------------------------------------------[Average]  ")
 
 #Iterate over all of the classifiers
 for j in range(len(classifiers)):
@@ -86,10 +87,13 @@ for j in range(len(classifiers)):
         clf = classifiers[j].fit(X_train, y_train)
         preditctions = clf.predict(X_test)
 
+        #Caculate the F1 score and store it
+        results[j][i] = format(f1_score(y_test, preditctions, average='macro'), ".3f")
+
         #Caculate the acuraccy and store it
-        correct = len([i for i,(predition, actual) in enumerate(zip(preditctions, y_test)) if predition == actual])
-        results[j][i] = correct / len(preditctions)
+        #correct = len([i for i,(predition, actual) in enumerate(zip(preditctions, y_test)) if predition == actual])
+        #results[j][i] = correct / len(preditctions)
         
         i += 1
 
-    print((names[j], results[j], format(sum(results[j][:]) / len(results[j]), ".3f")))
+    print((names[j], results[j], format(sum(map(float, results[j][:])) / len(results[j]), ".3f")))
