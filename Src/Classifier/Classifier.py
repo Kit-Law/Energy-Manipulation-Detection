@@ -2,13 +2,10 @@ import numpy as np
 from sklearn.svm import SVC
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
-import matplotlib.pyplot as plt
 
 #The classifier used will be a C-Support Vector Classification with a RBF kernel
-#This scored the highest acuraccy in testing at 93.9%
-#The data seems to have around 4 turning points so a 5 degrees is enough freedom to
-#make it acurate without overfitting
-classifier = SVC(kernel="rbf", gamma="auto", C=10, degree=5)
+#This scored the highest acuraccy in testing at 94.9%
+classifier = SVC(kernel="rbf", gamma="auto", decision_function_shape='ovo', C=1000)
 
 #Read the training and testing data
 trainingData = pd.read_csv('..\..\Data\TrainingData.txt', header=None)

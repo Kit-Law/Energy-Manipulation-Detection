@@ -15,6 +15,7 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import accuracy_score
 
 names = [
     "Nearest Neighbors",
