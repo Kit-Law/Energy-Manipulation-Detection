@@ -3,20 +3,21 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import LinearSVC
 from sklearn.svm import SVC
 from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.model_selection import KFold
+from sklearn.model_selection import RepeatedKFold
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.preprocessing import MinMaxScaler
 
 names = [
-    "Linear SVC",
+    "Nearest Neighbors",
     "Linear SVM",
     "RBF SVM",
     "Sigmoid SVM",
@@ -32,10 +33,10 @@ names = [
 
 #Define all of the classifiers to test
 classifiers = [
-    LinearSVC(),
-    SVC(kernel="linear", gamma="auto", C=10, degree=5),
-    SVC(kernel="rbf", gamma="auto", C=10, degree=5),
-    SVC(kernel="sigmoid", gamma="auto", C=10, degree=5),
+    KNeighborsClassifier(3),
+    SVC(kernel="linear", gamma="auto", C=10),
+    SVC(kernel="rbf", gamma="auto", decision_function_shape='ovo', C=1000),
+    SVC(kernel="sigmoid", gamma="auto", C=10),
     DecisionTreeClassifier(max_depth=100),
     RandomForestClassifier(max_depth=100, n_estimators=20, max_features=5),
     MLPClassifier(alpha=1, max_iter=1000),
@@ -47,6 +48,7 @@ classifiers = [
 ]
 
 numKFoldSplits = 10
+numKFoldRep = 2
 
 #Read the training data
 data = pd.read_csv('..\..\Data\TrainingData.txt', header=None)
@@ -63,10 +65,10 @@ scaler = MinMaxScaler()
 X = scaler.fit_transform(X)
 
 #Create a results matrix
-i, j = numKFoldSplits, len(classifiers)
+i, j = numKFoldSplits * numKFoldRep, len(classifiers)
 results = [[0 for x in range(i)] for y in range(j)] 
 
-print("  [Algorithm]---------------------------------[Results]----------------------------------[Average]  ")
+print("  [Algorithm]------------------------------------------------------------------[Results]-------------------------------------------------------------------[Average]  ")
 
 #Iterate over all of the classifiers
 for j in range(len(classifiers)):
@@ -74,7 +76,7 @@ for j in range(len(classifiers)):
 
     #K cross validate the data (there will be an equal number of both classes to train on)
     #This is because the data was split and then combined earlier
-    kf = KFold(n_splits=numKFoldSplits)
+    kf = RepeatedKFold(n_splits=numKFoldSplits, n_repeats=numKFoldRep)
     for train, test in kf.split(X):
         X_train, X_test = X[train], X[test]
         y_train, y_test = y[train], y[test]
