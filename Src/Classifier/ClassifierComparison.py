@@ -1,22 +1,19 @@
 import numpy as np
 from sklearn.neural_network import MLPClassifier
-from sklearn.svm import LinearSVC
 from sklearn.svm import SVC
-from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.gaussian_process.kernels import RBF
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.model_selection import RepeatedKFold
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-from sklearn.multiclass import OneVsOneClassifier
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
+import pandas as pd
+import os
+
+dirname = os.path.dirname(__file__)
 
 names = [
     "Nearest Neighbors",
@@ -53,7 +50,7 @@ numKFoldSplits = 10
 numKFoldRep = 2
 
 #Read the training data
-data = pd.read_csv('..\..\Data\TrainingData.txt', header=None)
+data = pd.read_csv(os.path.join(dirname, '../../Data/TrainingData.txt'), header=None)
 data = np.array(data)
 #Split the traning data into the two classes, then combine the data so classes are in the order {0,1,0,1,...,0,1}
 data[::2], data[1::2] = [data[(data[:,24]==0)], data[(data[:,24]==1)]]

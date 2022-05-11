@@ -1,10 +1,11 @@
-from lib2to3.pgen2.token import EQUAL
-from tkinter import Variable
 from pulp import LpMinimize, LpProblem, LpStatus, lpSum, LpVariable
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+import os
+
+dirname = os.path.dirname(__file__)
 
 #findOptimalSchedule crates a linear program to find the most optimal solution
 #for what time each user's tasks should be run, acording to the early time,
@@ -38,8 +39,8 @@ def findOptimalSchedule(priceCurves, userTasks, curveNumber):
     status = model.solve()
 
     # Get the results
-    print(f"status: {model.status}, {LpStatus[model.status]}")
-    print(f"objective: {model.objective.value()}")
+    print(model.status)
+    print(model.objective.value())
 
     #Commented code shows the varible values
     #for var in model.variables():
@@ -76,7 +77,7 @@ def plotGraph(model, allVariables, curveNumber):
         heights = [0] * 24
         for i, task in enumerate(tasks):
             if task.value() != None:
-                heights[i] = int(task.value())
+                heights[int(task.name.split('_')[2][4:6])] = int(task.value())
         
         #Plot the task heights along with task id label
         bar = plt.bar(pos, heights, color=color_list[int(tasks[0].name[4]) - 1], edgecolor='black',bottom=tallestHieghts)
@@ -97,17 +98,17 @@ def plotGraph(model, allVariables, curveNumber):
                 Line2D([0], [0], color=color_list[4], lw=4)],
                 ["User 1", "User 2", "User 3", "User 4", "User 5"], loc=0)
 
-    plt.savefig('..\..\Output\Plots\\'+str(curveNumber)+'.png')
+    plt.savefig(os.path.join(dirname, ('../../Output/Plots/'+str(curveNumber)+'.png')))
     plt.clf()
 
 #Main Program
 
 #Read the labeled priceing curves
-priceCurves = pd.read_csv('..\..\Output\TestingResults.txt', header=None)
+priceCurves = pd.read_csv(os.path.join(dirname, '../../Output/TestingResults.txt'), header=None)
 priceCurves = np.array(priceCurves)
 
 #Read the user task inputs
-userTasks = pd.read_excel('..\..\Input\COMP3217CW2Input.xlsx', sheet_name='User & Task ID',
+userTasks = pd.read_excel(os.path.join(dirname, '../../Input/COMP3217CW2Input.xlsx'), sheet_name='User & Task ID',
     dtype={'User & Task ID': str, 'Ready Time': int, 'Deadline':int, 'Maximum scheduled energy per hour':int, 'Energy Demand':int})
 
 #Find the optimal solution for each curve
